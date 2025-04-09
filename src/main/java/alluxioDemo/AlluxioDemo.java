@@ -29,7 +29,7 @@ import java.util.concurrent.Executors;
 public class AlluxioDemo {
     private static FileSystem fileSystem;
     private static CreateFilePOptions options;
-    private static final int THREAD_COUNT = 20;
+    private static final int THREAD_COUNT = 100;
     private static final List<String> FILE_PATHS = new ArrayList<>(Arrays.asList("/store_sales_1_16.dat", "/store_sales_1_16.dat-1", "/store_sales_1_16.dat-2", "/store_sales_1_16.dat-3", "/store_sales_1_16.dat-4", "/store_sales_1_16.dat-5", "/store_sales_1_16.dat-6", "/store_sales_1_16.dat-7"));
 
     @Before
@@ -37,8 +37,9 @@ public class AlluxioDemo {
         AlluxioProperties properties = new AlluxioProperties();
         properties.set(PropertyKey.MASTER_HOSTNAME, "pasak8s-15");
         properties.set(PropertyKey.MASTER_RPC_PORT, 30096);
-        properties.set(PropertyKey.WORKER_RPC_PORT, 30095);
+        // properties.set(PropertyKey.WORKER_RPC_PORT, 30095);
         properties.set(PropertyKey.SECURITY_LOGIN_USERNAME, "jgd");
+        // properties.set(PropertyKey.USER_BLOCK);
         AlluxioConfiguration conf = new InstancedConfiguration(properties);
 
         fileSystem = FileSystem.Factory.create(conf);
@@ -65,9 +66,9 @@ public class AlluxioDemo {
      * 测试文件读取时间
      */
     public double performTimedRead(AlluxioURI path) throws IOException, AlluxioException {
-        long startTime = System.nanoTime();
 
         FileInStream fileInStream = fileSystem.openFile(path);
+        long startTime = System.nanoTime();
 
         byte[] buffer = new byte[8192];
         long totalBytes = 0;
@@ -76,14 +77,15 @@ public class AlluxioDemo {
             totalBytes += buffer.length;
         }
 
-        double duration = System.nanoTime() - startTime;
-        double throughput = (double) (totalBytes / (1024 * 1024)) / (duration / 1000000000);
+        long duration = (System.nanoTime() - startTime) / 1000000;
+        double throughput = (double) (totalBytes / (1024 * 1024)) / ((double) duration / 1000);
         System.out.printf("Duration: %d ms | Size: %.2f MB | Throughput: %.2f MB/s%n",
                 duration,
                 totalBytes / (1024.0 * 1024.0),
                 throughput);
+
         fileInStream.close();
-        return duration;
+        return (double) duration / 1000;
     }
 
     @Test
@@ -109,7 +111,7 @@ public class AlluxioDemo {
                 try {
                     int randomIndex = ThreadLocalRandom.current().nextInt(FILE_PATHS.size());
                     String path = FILE_PATHS.get(randomIndex);
-                    // String path = FILE_PATHS.get(0);
+                    // String path = FILE_PATHS.get(4);
 
                     double threadDuration = performTimedRead(new AlluxioURI(path));
                     System.out.println("Reading " + path);
@@ -133,5 +135,9 @@ public class AlluxioDemo {
 
         System.out.printf("Total elapsed time: %.2f s\n", totalTimeSec);
         System.out.printf("Average thread execution time: %.2f ms\n", avgThreadTimeMs);
+    }
+
+    public static void main(String[] args) {
+
     }
 }

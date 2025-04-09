@@ -14,6 +14,18 @@
           </config>
         </ContributedStateBase>
       </target>
+      <target name="jgd@pasak8s-16:22" type="ssh/sftp" uuid="d5da979e-5365-4539-ac0d-bd7a8d8e8311">
+        <config>
+          <option name="projectRootOnTarget" value="/data1/jgd/workplace/Alluxio" />
+          <option name="serverName" value="jgd@pasak8s-16:22 agent" />
+        </config>
+        <ContributedStateBase type="JavaLanguageRuntime">
+          <config>
+            <option name="homePath" value="/data1/jgd/software/jdk1.8.0_431" />
+            <option name="javaVersionString" value="1.8.0_431" />
+          </config>
+        </ContributedStateBase>
+      </target>
     </targets>
   </component>
 </project>
