@@ -29,8 +29,9 @@ import java.util.concurrent.Executors;
 public class AlluxioDemo {
     private static FileSystem fileSystem;
     private static CreateFilePOptions options;
-    private static final int THREAD_COUNT = 100;
+    private static final int THREAD_COUNT = 10;
     private static final List<String> FILE_PATHS = new ArrayList<>(Arrays.asList("/store_sales_1_16.dat", "/store_sales_1_16.dat-1", "/store_sales_1_16.dat-2", "/store_sales_1_16.dat-3", "/store_sales_1_16.dat-4", "/store_sales_1_16.dat-5", "/store_sales_1_16.dat-6", "/store_sales_1_16.dat-7"));
+//    private static final List<String> FILE_PATHS = new ArrayList<>(Arrays.asList("/customer_1_16.dat", "/customer_1_16.dat-1", "/customer_1_16.dat-2", "/customer_1_16.dat-3", "/customer_1_16.dat-4", "/customer_1_16.dat-5", "/customer_1_16.dat-6", "/customer_1_16.dat-7"));
 
     @Before
     public void init(){
@@ -109,9 +110,9 @@ public class AlluxioDemo {
         for (int i = 0; i < THREAD_COUNT; i++) {
             executor.submit(() -> {
                 try {
-                    int randomIndex = ThreadLocalRandom.current().nextInt(FILE_PATHS.size());
-                    String path = FILE_PATHS.get(randomIndex);
-                    // String path = FILE_PATHS.get(4);
+//                    int randomIndex = ThreadLocalRandom.current().nextInt(FILE_PATHS.size());
+//                    String path = FILE_PATHS.get(randomIndex);
+                     String path = FILE_PATHS.get(4);
 
                     double threadDuration = performTimedRead(new AlluxioURI(path));
                     System.out.println("Reading " + path);
